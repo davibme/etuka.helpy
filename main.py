@@ -1,6 +1,9 @@
 import os
 import json
 import streamlit as st
+import requests
+from io import BytesIO
+from PIL import Image
 from openai import OpenAI
 
 # 1. Configuração de Página com Identidade Visual Dark de IA
@@ -101,18 +104,35 @@ client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
 
+# Função robusta para carregar a imagem da web sem falhas de CORS/Renderização
+@st.cache_data
+def carregar_logo_remoto(url):
+    try:
+        resposta = requests.get(url, timeout=10)
+        if resposta.status_code == 200:
+            return Image.open(BytesIO(resposta.content))
+    except Exception:
+        pass
+    return None
+
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # 🖼️ LINK DIRETO DA SUA IMAGEM ATUALIZADO
-    logo_etuka_cloud = "https://imgbox.com"
-    st.image(logo_etuka_cloud, width=105)
+    # URL Direto do ImgBox transformado em objeto PIL estável
+    url_logo = "https://imgbox.com"
+    imagem_logo = carregar_logo_remoto(url_logo)
+    
+    if imagem_logo:
+        st.image(imagem_logo, width=105)
+    else:
+        # Fallback visual caso o servidor de imagens caia temporariamente
+        st.markdown("<h1 style='font-size: 40px; margin: 0;'>🎓</h1>", unsafe_allow_html=True)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
     st.divider()
     
     disciplina_selecionada = st.selectbox(
-        "📚 Disciplina ativa:",
+        "📚 Disciplina activa:",
         ["Matemática", "História", "Ciências / Biologia", "Programação (Python)", "Geral"]
     )
     
