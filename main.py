@@ -1,6 +1,7 @@
 import os
 import json
 import base64
+import urllib.request
 import streamlit as st
 from openai import OpenAI
 
@@ -101,30 +102,28 @@ api_key_segura = st.secrets.get("OPENAI_API_KEY", os.environ.get("OPENAI_API_KEY
 client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
+CAMINHO_LOCAL = "logo_etuka.jpg"
+URL_LOGOTIPO = "https://imgbox.com"
 
-# 🖼️ STRING COMPACTA E CORRIGIDA COM O SEU LOGÓTIPO AZUL E ROXO (CHAPÉU + LÂMPADA + LIVRO)
-IMAGEM_REAL_DATA = (
-    "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABGdBTUEAALGPC/xhBQAAACBjSFJN"
-    "AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAAA"
-    "CXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6gcDAg4XwHwAnAAACb9JREFUeNrtnXtsFNcVxz93"
-    "v/b6FextbKChgYBCwI80hSg0gUororSgShWpSpsg8S9VatO0SpsmVRu1f9RWTatWbdI0VVs1bdr+"
-    "iJSWRuK0CgXShidpChgCsY0fNjYvY7N7v/f2j3fX69317s7O7s7Mru18pNGsZ+7OnXvOub/z+N0z"
-    "K4RhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZh"
-    "GIZhGIZhGIZhGIZhGIZhGIZhGIZhmP8bhvU7mEwmc08gELg/EAiscl3XN00YhqFrWk00Gn0p...v/"
-    "AAnAAACb9JREFUeNrtnXtsFNcVxz93v/b6FextbKChgYBCwI80hSg0gUororSgShWpSpsg8S9Vat"
-    "O0SpsmVRu1f9RWTatWbdI0VVs1bdr+iJSWRuK0CgXShidpChgCsY0fNjYvY7N7v/f2j3fX69317"
-    "s7O7s7Mru18pNGsZ+7OnXvOub/z+N0zK4RhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZh"
-    "GIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhmP8bhvU7mEwmc08"
-    "gELg/EAiscl3XN00YhqFrWk00Gn0p"
-)
-
-# Converte os dados embutidos de forma limpa sem quebras
-LOGO_BYTES = base64.b64decode(IMAGEM_REAL_DATA)
+# Descarrega e guarda a imagem de forma interna e segura no servidor
+if not os.path.exists(CAMINHO_LOCAL):
+    try:
+        requisicao = urllib.request.Request(
+            URL_LOGOTIPO, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        )
+        with urllib.request.urlopen(requisicao) as resposta, open(CAMINHO_LOCAL, 'wb') as ficheiro:
+            ficheiro.write(resposta.read())
+    except Exception:
+        pass
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # Mostra a imagem embutida de forma direta e sem requisições web externas
-    st.image(LOGO_BYTES, width=105)
+    # Valida e apresenta a imagem guardada localmente
+    if os.path.exists(CAMINHO_LOCAL):
+        st.image(CAMINHO_LOCAL, width=105)
+    else:
+        st.markdown("<h1 style='text-align: center; margin: 0;'>🎓</h1>", unsafe_allow_html=True)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
@@ -213,3 +212,4 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                     guardar_historico_disco(st.session_state.mensagens)
                 except Exception as e:
                     st.error(f"Ocorreu um erro na API da OpenAI: {e}")
+
