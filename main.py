@@ -6,7 +6,7 @@ from openai import OpenAI
 # 1. Configuração de Página com Identidade Visual Dark de IA
 st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT
+# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT e ajustar o logótipo nativo
 st.markdown("""
     <style>
     /* Fundo principal totalmente escuro (Estilo ChatGPT Dark) */
@@ -103,18 +103,9 @@ FICHEIRO_HISTORICO = "historico_estudo.json"
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # Lógica inteligente para encontrar a tua imagem independentemente do formato (.png, .jpg ou .jpeg)
-    imagem_encontrada = False
-    for extensao in ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"]:
-        nome_ficheiro = f"logo.{extensao}"
-        if os.path.exists(nome_ficheiro):
-            st.image(nome_ficheiro, width=105)
-            imagem_encontrada = True
-            break
-            
-    # Caso ainda não tenhas feito o upload, ele mostra o ícone de carregamento padrão temporário
-    if not imagem_encontrada:
-        st.image("https://flaticon.com", width=105)
+    # 🖼️ RESOLUÇÃO ABSOLUTA: Logótipo embutido diretamente por URL estável na Cloud
+    logo_etuka_cloud = "https://imgbox.com"
+    st.image(logo_etuka_cloud, width=105)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
@@ -206,4 +197,3 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                         st.markdown("<span style='color: #FF4B4B;'>⚠️ Conta sem saldo: O teu site está lindo e 100% no Modo Escuro! Para começar a funcionar, carrega $5 na tua conta OpenAI (://openai.com > Billing).</span>", unsafe_allow_html=True)
                     else:
                         st.error(f"Erro: {e}")
-
