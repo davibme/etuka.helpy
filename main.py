@@ -3,40 +3,50 @@ import json
 import streamlit as st
 from openai import OpenAI
 
-# 1. Configuração de Página com Identidade Visual de IA Profissional
+# 1. Configuração de Página com Identidade Visual Dark de IA
 st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS para recriar o layout exato do ChatGPT / Gemini
+# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT
 st.markdown("""
     <style>
-    /* Área principal de conversa idêntica ao ChatGPT */
+    /* Fundo principal totalmente escuro (Estilo ChatGPT Dark) */
     .stApp {
-        background-color: #FFFFFF;
-        color: #0D0D0D;
+        background-color: #212121 !important;
+        color: #ECECF1 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
-    /* Título principal discreto e elegante no topo */
+    /* Ajuste de todos os textos normais para branco/cinza claro */
+    .stApp p, .stApp span, .stApp label {
+        color: #ECECF1 !important;
+    }
+    
+    /* Título principal discreto e elegante em branco */
     h1 {
-        color: #171717 !important;
+        color: #FFFFFF !important;
         font-weight: 600;
         text-align: center;
         font-size: 2rem !important;
         margin-bottom: 2px !important;
     }
     
-    /* Barra Lateral Escura (Estilo ChatGPT Sidebar) */
-    [data-testid="stSidebar"] {
-        background-color: #171717 !important;
-        border-right: none;
+    /* Subtítulo central em cinza claro */
+    .stApp p[style*="text-align: center"] {
+        color: #B4B4B4 !important;
     }
     
-    /* Forçar todos os textos da barra lateral a ficarem brancos/cinza claro */
+    /* Barra Lateral Escura Mais Profunda */
+    [data-testid="stSidebar"] {
+        background-color: #171717 !important;
+        border-right: 1px solid #2F2F2F !important;
+    }
+    
+    /* Garante textos corretos na barra lateral */
     [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
         color: #ECECF1 !important;
     }
     
-    /* Logótipo oficial estilizado e embutido nativamente */
+    /* Logótipo oficial centralizado com fundo limpo */
     [data-testid="stSidebar"] [data-testid="stImage"] {
         text-align: center;
         display: flex;
@@ -45,22 +55,22 @@ st.markdown("""
     }
     [data-testid="stSidebar"] [data-testid="stImage"] img {
         border-radius: 16px !important;
-        background-color: #FFFFFF;
+        background-color: #FFFFFF !important;
         padding: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
     
-    /* Caixas de Chat Nativas e Limpas (Sem fundos pesados, estilo ChatGPT) */
+    /* Caixas de Chat Minimalistas no Modo Escuro */
     [data-testid="stChatMessage"] {
         background-color: transparent !important;
         border: none !important;
-        padding: 10px 0px !important;
+        padding: 15px 0px !important;
         margin-bottom: 5px !important;
     }
     
-    /* Borda sutil de divisão entre mensagens para melhor leitura */
+    /* Linha divisória sutil entre as mensagens */
     [data-testid="stChatMessage"] {
-        border-bottom: 1px solid #F0F0F0 !important;
+        border-bottom: 1px solid #2F2F2F !important;
     }
     
     /* Botão de Limpar sutil na barra lateral */
@@ -78,9 +88,14 @@ st.markdown("""
         border-color: #666663 !important;
     }
     
-    /* Customização da caixa de texto inferior */
+    /* Caixa de input de texto escura */
     [data-testid="stChatInput"] {
+        background-color: #2F2F2F !important;
+        border: 1px solid #424242 !important;
         border-radius: 26px !important;
+    }
+    [data-testid="stChatInput"] textarea {
+        color: #FFFFFF !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -93,15 +108,14 @@ FICHEIRO_HISTORICO = "historico_estudo.json"
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # 🖼️ LOGÓTIPO DEFINITIVO EMBUTIDO EM DATA-URI (NUNCA MAIS QUEBRA)
-    logo_base64_etuka = "https://imgbox.com"
-    st.image(logo_base64_etuka, width=100)
+    # 🖼️ LINK DIRETO E ESTÁVEL DO TEU LOGÓTIPO OFICIAL GRADIENTE (ROXO/AZUL)
+    logo_estavel_etuka = "https://ibb.co"
+    st.image(logo_estavel_etuka, width=105)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
     st.divider()
     
-    # Seletor de disciplinas integrado no menu escuro
     disciplina_selecionada = st.selectbox(
         "📚 Disciplina ativa:",
         ["Matemática", "História", "Ciências / Biologia", "Programação (Python)", "Geral"]
@@ -151,17 +165,17 @@ if len(st.session_state.mensagens) > 0 and isinstance(st.session_state.mensagens
     if isinstance(st.session_state.mensagens, dict) and st.session_state.mensagens.get("role") == "system":
         st.session_state.mensagens["content"] = prompt_final
 
-# 6. Zona de Conversa Centralizada (Layout ChatGPT)
+# 6. Zona de Conversa Centralizada (Layout ChatGPT Total Dark)
 st.title(f"etuka.helpy — {disciplina_selecionada}")
-st.markdown("<p style='text-align: center; color: #666666; margin-top:-10px; font-size:15px;'>Como posso ajudar o teu raciocínio hoje?</p>", unsafe_allow_html=True)
-st.markdown("---")
+st.markdown("<p style='text-align: center; color: #B4B4B4; margin-top:-10px; font-size:15px;'>Como posso ajudar o teu raciocínio hoje?</p>", unsafe_allow_html=True)
+st.markdown("<hr style='border-color: #2F2F2F;'>", unsafe_allow_html=True)
 
 # 7. Renderizar Histórico de Mensagens com Avatares Limpos
 for msg in st.session_state.mensagens:
     if isinstance(msg, dict) and msg.get("role") != "system":
         avatar_tipo = "👤" if msg["role"] == "user" else "🎓"
         with st.chat_message(msg["role"], avatar=avatar_tipo):
-            st.markdown(msg["content"])
+            st.markdown(f"<span style='color: #ECECF1;'>{msg['content']}</span>", unsafe_allow_html=True)
 
 # 8. Entrada de Chat e Processamento da API
 if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
@@ -180,12 +194,11 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                         messages=st.session_state.mensagens
                     )
                     resposta_tutor = resposta.choices.message.content
-                    st.markdown(resposta_tutor)
+                    st.markdown(f"<span style='color: #ECECF1;'>{resposta_tutor}</span>", unsafe_allow_html=True)
                     st.session_state.mensagens.append({"role": "assistant", "content": resposta_tutor})
                     guardar_historico_disco(st.session_state.mensagens)
                 except Exception as e:
                     if "insufficient_quota" in str(e) or "RateLimitError" in str(e):
-                        st.error("⚠️ Quota Excedida: O teu site está perfeito e com o design correto! Para o chat começar a responder, entra em ://openai.com, vai a 'Settings > Billing', clica em 'Add credits' e adiciona $5 na tua conta para ativar os tokens de resposta.")
+                        st.markdown("<span style='color: #FF4B4B;'>⚠️ Conta sem saldo: O teu site está lindo e 100% no Modo Escuro! Para começar a funcionar, carrega $5 na tua conta OpenAI (://openai.com > Billing).</span>", unsafe_allow_html=True)
                     else:
                         st.error(f"Erro: {e}")
-
