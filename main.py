@@ -30,11 +30,6 @@ st.markdown("""
         margin-bottom: 2px !important;
     }
     
-    /* Subtítulo central em cinza claro */
-    .stApp p[style*="text-align: center"] {
-        color: #B4B4B4 !important;
-    }
-    
     /* Barra Lateral Escura Mais Profunda */
     [data-testid="stSidebar"] {
         background-color: #171717 !important;
@@ -108,9 +103,18 @@ FICHEIRO_HISTORICO = "historico_estudo.json"
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # 🖼️ LINK DIRETO E ESTÁVEL DO TEU LOGÓTIPO OFICIAL GRADIENTE (ROXO/AZUL)
-    logo_estavel_etuka = "https://ibb.co"
-    st.image(logo_estavel_etuka, width=105)
+    # Lógica inteligente para encontrar a tua imagem independentemente do formato (.png, .jpg ou .jpeg)
+    imagem_encontrada = False
+    for extensao in ["png", "jpg", "jpeg", "PNG", "JPG", "JPEG"]:
+        nome_ficheiro = f"logo.{extensao}"
+        if os.path.exists(nome_ficheiro):
+            st.image(nome_ficheiro, width=105)
+            imagem_encontrada = True
+            break
+            
+    # Caso ainda não tenhas feito o upload, ele mostra o ícone de carregamento padrão temporário
+    if not imagem_encontrada:
+        st.image("https://flaticon.com", width=105)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
@@ -202,3 +206,4 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                         st.markdown("<span style='color: #FF4B4B;'>⚠️ Conta sem saldo: O teu site está lindo e 100% no Modo Escuro! Para começar a funcionar, carrega $5 na tua conta OpenAI (://openai.com > Billing).</span>", unsafe_allow_html=True)
                     else:
                         st.error(f"Erro: {e}")
+
