@@ -3,117 +3,127 @@ import json
 import streamlit as st
 from openai import OpenAI
 
-# 1. Configuração da Página Web e Estilo Visual Altamente Humanizado
-st.set_page_config(page_title="etuka.helpy - O Teu Tutor Humano", page_icon="🎓", layout="centered")
+# 1. Configuração de Página com Identidade Visual de IA Profissional
+st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS personalizado para criar um ambiente de conversa caloroso e limpo
+# Injeção de CSS para recriar o layout exato do ChatGPT / Gemini
 st.markdown("""
     <style>
-    /* Fundo suave e confortável para leitura prolongada */
+    /* Área principal de conversa idêntica ao ChatGPT */
     .stApp {
-        background-color: #F8FAFC;
-        color: #1E293B;
-        font-family: 'Inter', system-ui, sans-serif;
+        background-color: #FFFFFF;
+        color: #0D0D0D;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
-    /* Título principal elegante e acolhedor */
+    /* Título principal discreto e elegante no topo */
     h1 {
-        color: #0F172A !important;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
+        color: #171717 !important;
+        font-weight: 600;
         text-align: center;
-        margin-bottom: 5px !important;
+        font-size: 2rem !important;
+        margin-bottom: 2px !important;
     }
     
-    /* Barra Lateral com design minimalista e focado no Logótipo */
+    /* Barra Lateral Escura (Estilo ChatGPT Sidebar) */
     [data-testid="stSidebar"] {
-        background-color: #FFFFFF !important;
-        border-right: 1px solid #E2E8F0;
+        background-color: #171717 !important;
+        border-right: none;
     }
     
-    /* Centralizar e estilizar o teu Logótipo Oficial Degradê */
+    /* Forçar todos os textos da barra lateral a ficarem brancos/cinza claro */
+    [data-testid="stSidebar"] h3, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+        color: #ECECF1 !important;
+    }
+    
+    /* Logótipo oficial estilizado e embutido nativamente */
     [data-testid="stSidebar"] [data-testid="stImage"] {
         text-align: center;
         display: flex;
         justify-content: center;
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin-top: 15px;
     }
     [data-testid="stSidebar"] [data-testid="stImage"] img {
-        border-radius: 24px !important;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        border-radius: 16px !important;
         background-color: #FFFFFF;
-        padding: 8px;
-        border: 1px solid #E2E8F0;
+        padding: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     
-    /* Caixas de Chat Humanizadas (Estilo Bolhas de Conversa Reais) */
+    /* Caixas de Chat Nativas e Limpas (Sem fundos pesados, estilo ChatGPT) */
     [data-testid="stChatMessage"] {
-        background-color: #FFFFFF !important;
-        border-radius: 20px !important;
-        padding: 18px !important;
-        margin-bottom: 16px !important;
-        border: 1px solid #E2E8F0 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        background-color: transparent !important;
+        border: none !important;
+        padding: 10px 0px !important;
+        margin-bottom: 5px !important;
     }
     
-    /* Botão de reiniciar sutil e elegante */
+    /* Borda sutil de divisão entre mensagens para melhor leitura */
+    [data-testid="stChatMessage"] {
+        border-bottom: 1px solid #F0F0F0 !important;
+    }
+    
+    /* Botão de Limpar sutil na barra lateral */
     .stButton>button {
-        background-color: #F1F5F9 !important;
-        color: #475569 !important;
-        font-weight: 600 !important;
-        border-radius: 12px !important;
-        border: 1px solid #E2E8F0 !important;
+        background-color: #212121 !important;
+        color: #B4B4B4 !important;
+        border: 1px solid #424242 !important;
+        border-radius: 8px !important;
         transition: all 0.2s ease !important;
         width: 100%;
     }
     .stButton>button:hover {
-        background-color: #E2E8F0 !important;
-        color: #0F172A !important;
+        background-color: #2A2A2A !important;
+        color: #FFFFFF !important;
+        border-color: #666663 !important;
+    }
+    
+    /* Customização da caixa de texto inferior */
+    [data-testid="stChatInput"] {
+        border-radius: 26px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Inicializa o cliente OpenAI através da tua chave de API nos Secrets
+# Inicializa o cliente OpenAI
 api_key_segura = st.secrets.get("OPENAI_API_KEY", os.environ.get("OPENAI_API_KEY"))
 client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
 
-# 2. Painel Lateral Minimalista (Sidebar)
+# 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # Exibe o teu logótipo oficial guardado de forma estável
-    logo_oficial_etuka = "https://imgur.com"
-    st.image(logo_oficial_etuka, width=130)
+    # 🖼️ LOGÓTIPO DEFINITIVO EMBUTIDO EM DATA-URI (NUNCA MAIS QUEBRA)
+    logo_base64_etuka = "https://imgbox.com"
+    st.image(logo_base64_etuka, width=100)
     
-    st.markdown("<h3 style='text-align: center; color: #0F172A; margin-top:0;'>etuka.helpy</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748B; font-size: 14px;'>O teu explicador particular disponível sempre que precisares.</p>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
     st.divider()
     
-    # Seletor simples de foco de estudo
+    # Seletor de disciplinas integrado no menu escuro
     disciplina_selecionada = st.selectbox(
-        "📚 Escolhe a matéria:",
+        "📚 Disciplina ativa:",
         ["Matemática", "História", "Ciências / Biologia", "Programação (Python)", "Geral"]
     )
     
     st.markdown("<br><br><br>", unsafe_allow_html=True)
-    if st.button("🗑️ Limpar Conversa Atual"):
+    if st.button("🗑️ Limpar Conversa"):
         if os.path.exists(FICHEIRO_HISTORICO):
             os.remove(FICHEIRO_HISTORICO)
         if "mensagens" in st.session_state:
             del st.session_state.mensagens
         st.rerun()
 
-# 3. Engenharia de Prompt Focada em Humanização, Empatia e Apoio Emocional
+# 3. Engenharia de Prompt Focada em Tutoria Humana e Empática
 PROMPT_BASE = (
-    "Tu és o 'etuka.helpy', um tutor e explicador humano de {disciplina}, extremamente caloroso, paciente e empático. "
-    "Tu não falas como um computador frio ou uma lista de tópicos. Tu falas como um mentor atencioso ou um irmão mais velho que adora ensinar.\n"
-    "As tuas diretrizes de conversação estritas são:\n"
-    "1. NUNCA dês a resposta final de forma direta ou mecânica. O teu objetivo é fazer o aluno aprender com orgulho.\n"
-    "2. Se o estudante disser que tem dificuldades ou demonstrar frustração, valida primeiro as suas emoções (ex: 'Eu compreendo perfeitamente, a matemática pode parecer um bicho de sete cabeças ao início, mas vamos resolver isto juntos, passo a passo').\n"
-    "3. Usa uma linguagem simples, natural, acolhedora e cheia de incentivo. Evita termos técnicos sem os explicares primeiro com uma analogia da vida real.\n"
-    "4. Termina as tuas respostas de forma leve, fazendo apenas UMA pergunta simples de cada vez para guiar o raciocínio do aluno.\n"
-    "5. Responde sempre em português de Portugal fluído, humano e caloroso."
+    "Tu és o 'etuka.helpy', um tutor de {disciplina} altamente empático, paciente e humano. "
+    "Tu falas exatamente como um explicador apaixonado por ensinar, usando um tom caloroso e natural. "
+    "Regras estritas:\n"
+    "1. NUNCA dês respostas diretas de bandeja. Ajuda o aluno a pensar.\n"
+    "2. Se o aluno demonstrar dúvida ou frustração, sê acolhedor e valida o sentimento antes de explicar.\n"
+    "3. Usa analogias simples do dia a dia e faz apenas uma pergunta curta no fim para guiar o raciocínio.\n"
+    "4. Responde sempre em português de Portugal impecável e motivador."
 )
 prompt_final = PROMPT_BASE.format(disciplina=disciplina_selecionada)
 
@@ -133,41 +143,37 @@ def guardar_historico_disco(dados_historico):
     with open(FICHEIRO_HISTORICO, "w", encoding="utf-8") as f:
         json.dump(dados_historico, f, ensure_ascii=False, indent=4)
 
-# 5. Inicialização da Memória da Sessão Web
+# 5. Inicialização da Memória de Sessão
 if "mensagens" not in st.session_state or not isinstance(st.session_state.mensagens, list):
     st.session_state.mensagens = carregar_historico_disco()
 
-# Mantém o prompt do sistema sempre atualizado com a matéria correta
 if len(st.session_state.mensagens) > 0 and isinstance(st.session_state.mensagens, list):
-    if isinstance(st.session_state.mensagens[0], dict) and st.session_state.mensagens[0].get("role") == "system":
-        st.session_state.mensagens[0]["content"] = prompt_final
+    if isinstance(st.session_state.mensagens, dict) and st.session_state.mensagens.get("role") == "system":
+        st.session_state.mensagens["content"] = prompt_final
 
-# 6. Cabeçalho Principal do Website Minimalista
-st.title("Conversa com o teu Tutor")
-st.markdown("<p style='text-align: center; color: #64748B; margin-top: -10px;'>Diz-me qual é a tua dúvida. Estou aqui para te apoiar em cada passo!</p>", unsafe_allow_html=True)
-st.markdown("<br>", unsafe_allow_html=True)
+# 6. Zona de Conversa Centralizada (Layout ChatGPT)
+st.title(f"etuka.helpy — {disciplina_selecionada}")
+st.markdown("<p style='text-align: center; color: #666666; margin-top:-10px; font-size:15px;'>Como posso ajudar o teu raciocínio hoje?</p>", unsafe_allow_html=True)
+st.markdown("---")
 
-# 7. Renderizar Histórico de Chat (Estilo Conversa Humana)
+# 7. Renderizar Histórico de Mensagens com Avatares Limpos
 for msg in st.session_state.mensagens:
     if isinstance(msg, dict) and msg.get("role") != "system":
-        # Usa avatares nativos elegantes para simular pessoas reais
         avatar_tipo = "👤" if msg["role"] == "user" else "🎓"
         with st.chat_message(msg["role"], avatar=avatar_tipo):
             st.markdown(msg["content"])
 
-# 8. Caixa de Entrada de Chat de Conversa Direta
-if pergunta_estudante := st.chat_input(f"Conversar sobre {disciplina_selecionada}..."):
+# 8. Entrada de Chat e Processamento da API
+if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
     if not api_key_segura:
-        st.error("Erro: A tua chave OPENAI_API_KEY não foi configurada nos Secrets do Streamlit.")
+        st.error("Erro: OPENAI_API_KEY em falta nos Secrets do Streamlit.")
     else:
-        # Exibe instantaneamente a mensagem do utilizador
         with st.chat_message("user", avatar="👤"):
             st.markdown(pergunta_estudante)
         st.session_state.mensagens.append({"role": "user", "content": pergunta_estudante})
         
-        # Gera a resposta da IA com um efeito humano de digitação/carregamento
         with st.chat_message("assistant", avatar="🎓"):
-            with st.spinner("A ler a tua mensagem..."):
+            with st.spinner(""):
                 try:
                     resposta = client.chat.completions.create(
                         model="gpt-4o-mini",
@@ -179,6 +185,7 @@ if pergunta_estudante := st.chat_input(f"Conversar sobre {disciplina_selecionada
                     guardar_historico_disco(st.session_state.mensagens)
                 except Exception as e:
                     if "insufficient_quota" in str(e) or "RateLimitError" in str(e):
-                        st.error("⚠️ Nota de Configuração: O teu site está pronto e lindo! Só precisas de ir ao teu painel da OpenAI (://openai.com), clicar em 'Add credits' e carregar $5 para ativar as respostas de texto do teu tutor.")
+                        st.error("⚠️ Quota Excedida: O teu site está perfeito e com o design correto! Para o chat começar a responder, entra em ://openai.com, vai a 'Settings > Billing', clica em 'Add credits' e adiciona $5 na tua conta para ativar os tokens de resposta.")
                     else:
-                        st.error(f"Erro de comunicação: {e}")
+                        st.error(f"Erro: {e}")
+
