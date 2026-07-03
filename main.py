@@ -1,7 +1,5 @@
 import os
 import json
-import base64
-import urllib.request
 import streamlit as st
 from openai import OpenAI
 
@@ -43,18 +41,21 @@ st.markdown("""
         color: #ECECF1 !important;
     }
     
-    /* Logótipo oficial centralizado com fundo limpo */
-    [data-testid="stSidebar"] [data-testid="stImage"] {
+    /* Ajuste de estilo e arredondamento do nosso contentor HTML do logótipo */
+    .logo-container {
         text-align: center;
         display: flex;
         justify-content: center;
         margin-top: 15px;
+        margin-bottom: 10px;
     }
-    [data-testid="stSidebar"] [data-testid="stImage"] img {
+    .logo-container img {
         border-radius: 16px !important;
         background-color: #FFFFFF !important;
         padding: 6px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        width: 105px;
+        height: auto;
     }
     
     /* Caixas de Chat Minimalistas no Modo Escuro */
@@ -102,28 +103,16 @@ api_key_segura = st.secrets.get("OPENAI_API_KEY", os.environ.get("OPENAI_API_KEY
 client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
-CAMINHO_LOCAL = "logo_etuka.jpg"
 URL_LOGOTIPO = "https://imgbox.com"
-
-# Descarrega e guarda a imagem de forma interna e segura no servidor
-if not os.path.exists(CAMINHO_LOCAL):
-    try:
-        requisicao = urllib.request.Request(
-            URL_LOGOTIPO, 
-            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-        )
-        with urllib.request.urlopen(requisicao) as resposta, open(CAMINHO_LOCAL, 'wb') as ficheiro:
-            ficheiro.write(resposta.read())
-    except Exception:
-        pass
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # Valida e apresenta a imagem guardada localmente
-    if os.path.exists(CAMINHO_LOCAL):
-        st.image(CAMINHO_LOCAL, width=105)
-    else:
-        st.markdown("<h1 style='text-align: center; margin: 0;'>🎓</h1>", unsafe_allow_html=True)
+    # Renderização HTML direta: Elimina os erros do PIL e contorna bloqueios de rede do servidor
+    st.markdown(f"""
+        <div class="logo-container">
+            <img src="{URL_LOGOTIPO}" alt="Logo etuka.helpy">
+        </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
