@@ -83,7 +83,7 @@ st.markdown("""
         border-color: #666663 !important;
     }
     
-    /* Caixa de input de texto escura */
+    /* Caixa de input de text escura */
     [data-testid="stChatInput"] {
         background-color: #2F2F2F !important;
         border: 1px solid #424242 !important;
@@ -103,7 +103,7 @@ FICHEIRO_HISTORICO = "historico_estudo.json"
 
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # 🖼️ RESOLUÇÃO ABSOLUTA: Logótipo embutido diretamente por URL estável na Cloud
+    # 🖼️ LINK DIRETO DA SUA IMAGEM ATUALIZADO
     logo_etuka_cloud = "https://imgbox.com"
     st.image(logo_etuka_cloud, width=105)
     
@@ -188,12 +188,9 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                         model="gpt-4o-mini",
                         messages=st.session_state.mensagens
                     )
-                    resposta_tutor = resposta.choices.message.content
+                    resposta_tutor = resposta.choices[0].message.content
                     st.markdown(f"<span style='color: #ECECF1;'>{resposta_tutor}</span>", unsafe_allow_html=True)
                     st.session_state.mensagens.append({"role": "assistant", "content": resposta_tutor})
                     guardar_historico_disco(st.session_state.mensagens)
                 except Exception as e:
-                    if "insufficient_quota" in str(e) or "RateLimitError" in str(e):
-                        st.markdown("<span style='color: #FF4B4B;'>⚠️ Conta sem saldo: O teu site está lindo e 100% no Modo Escuro! Para começar a funcionar, carrega $5 na tua conta OpenAI (://openai.com > Billing).</span>", unsafe_allow_html=True)
-                    else:
-                        st.error(f"Erro: {e}")
+                    st.error(f"Ocorreu um erro na API da OpenAI: {e}")
