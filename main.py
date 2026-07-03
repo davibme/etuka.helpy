@@ -6,7 +6,7 @@ from openai import OpenAI
 # 1. Configuração de Página com Identidade Visual Dark de IA
 st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT e ajustar o logótipo nativo
+# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT
 st.markdown("""
     <style>
     /* Fundo principal totalmente escuro (Estilo ChatGPT Dark) */
@@ -41,23 +41,6 @@ st.markdown("""
         color: #ECECF1 !important;
     }
     
-    /* Ajuste de estilo e arredondamento do nosso contentor HTML do logótipo */
-    .logo-container {
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        margin-top: 15px;
-        margin-bottom: 10px;
-    }
-    .logo-container img {
-        border-radius: 16px !important;
-        background-color: #FFFFFF !important;
-        padding: 6px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-        width: 105px;
-        height: auto;
-    }
-    
     /* Caixas de Chat Minimalistas no Modo Escuro */
     [data-testid="stChatMessage"] {
         background-color: transparent !important;
@@ -86,7 +69,7 @@ st.markdown("""
         border-color: #666663 !important;
     }
     
-    /* Caixa de input de text escura */
+    /* Caixa de input de texto escura */
     [data-testid="stChatInput"] {
         background-color: #2F2F2F !important;
         border: 1px solid #424242 !important;
@@ -103,18 +86,10 @@ api_key_segura = st.secrets.get("OPENAI_API_KEY", os.environ.get("OPENAI_API_KEY
 client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
-URL_LOGOTIPO = "https://imgbox.com"
 
-# 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
+# 2. Barra Lateral Escura Profissional (ChatGPT Sidebar) - Sem Logótipo
 with st.sidebar:
-    # Renderização HTML direta: Elimina os erros do PIL e contorna bloqueios de rede do servidor
-    st.markdown(f"""
-        <div class="logo-container">
-            <img src="{URL_LOGOTIPO}" alt="Logo etuka.helpy">
-        </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; margin-top:25px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
     st.divider()
     
@@ -201,4 +176,3 @@ if pergunta_estudante := st.chat_input(f"Mensagem para o etuka.helpy..."):
                     guardar_historico_disco(st.session_state.mensagens)
                 except Exception as e:
                     st.error(f"Ocorreu um erro na API da OpenAI: {e}")
-
