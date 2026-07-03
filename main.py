@@ -6,10 +6,10 @@ from openai import OpenAI
 # 1. Configuração de Página com Identidade Visual Dark de IA
 st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT com preenchimento de fundo estilizado
+# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT e estilizar tabelas e o fundo
 st.markdown("""
     <style>
-    /* Fundo principal com grelha de engenharia e brilho gradiente sutil para preencher o vazio */
+    /* Fundo principal com grelha de engenharia e brilho gradiente sutil */
     .stApp {
         background-color: #212121 !important;
         background-image: 
@@ -56,6 +56,30 @@ st.markdown("""
         backdrop-filter: blur(4px);
     }
     
+    /* ESTILIZAÇÃO COMPLETA PARA TABELAS EM MODO ESCURO */
+    .stApp table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 15px 0 !important;
+        color: #ECECF1 !important;
+    }
+    .stApp th {
+        background-color: #2F2F2F !important;
+        color: #FFFFFF !important;
+        font-weight: bold !important;
+        border: 1px solid #424242 !important;
+        padding: 10px !important;
+        text-align: left !important;
+    }
+    .stApp td {
+        border: 1px solid #424242 !important;
+        padding: 10px !important;
+        background-color: rgba(255, 255, 255, 0.01) !important;
+    }
+    .stApp tr:nth-child(even) td {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+    }
+    
     /* Botão de Limpar sutil na barra lateral */
     .stButton>button {
         background-color: #212121 !important;
@@ -90,7 +114,7 @@ client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
 
-# 2. Barra Lateral Escura Profissional (ChatGPT Sidebar) - Sem Logótipo
+# 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
     st.markdown("<h3 style='text-align: center; margin-top:25px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
@@ -109,15 +133,21 @@ with st.sidebar:
             del st.session_state.mensagens
         st.rerun()
 
-# 3. Engenharia de Prompt Focada em Tutoria Humana e Empática
+# 3. Engenharia de Prompt Avançada — O Melhor Tutor de Estudos do Mundo (Neuroeducação)
 PROMPT_BASE = (
-    "Tu és o 'etuka.helpy', um tutor de {disciplina} altamente empático, paciente e humano. "
-    "Tu falas exatamente como um explicador apaixonado por ensinar, usando um tom caloroso e natural. "
-    "Regras estritas:\n"
-    "1. NUNCA dês respostas diretas de bandeja. Ajuda o aluno a pensar.\n"
-    "2. Se o aluno demonstrar dúvida ou frustração, sê acolhedor e valida o sentimento antes de explicar.\n"
-    "3. Usa analogias simples do dia a dia e faz apenas uma pergunta curta no fim para guiar o raciocínio.\n"
-    "4. Responde sempre em português de Portugal impecável e motivador."
+    "Tu és o 'etuka.helpy', reconhecido como o melhor e mais avançado tutor de estudos do mundo na disciplina de {disciplina}. "
+    "O teu objetivo não é apenas dar respostas, mas construir uma mente brilhante no estudante através de metodologias pedagógicas de elite.\n\n"
+    "DIRETRIZES DE ATUAÇÃO:\n"
+    "1. MÉTODO SOCRÁTICO E DESAFIO CONSTRUTIVO: Nunca entregues a solução final de caras. Quando o estudante pedir um resultado ou resolução, "
+    "decompõe o problema em pequenos passos lógicos. Explica o conceito base e faz apenas UMA pergunta direcionada no fim para que ele descubra a resposta sozinho.\n"
+    "2. TÉCNICA DE FEYNMAN (SIMPLICIDADE MÁXIMA): Se o estudante não perceber, explica a matéria como se estivesses a falar com uma criança de 10 anos. "
+    "Usa analogias práticas, metáforas do quotidiano e exemplos visuais impressionantes.\n"
+    "3. EMPATIA, MOTIVAÇÃO E PSICOLOGIA POSITIVA: Valida de forma calorosa as frustrações ou dificuldades do estudante (ex: 'É perfeitamente normal achares isto confuso ao início, eu estou aqui contigo!'). "
+    "Celebra cada pequeno progresso de forma genuína para ativar a dopamina e a autoconfiança dele.\n"
+    "4. ESTRUTURAÇÃO VISUAL DE ELITE: Sempre que organizares dados, cronologias, fórmulas ou comparações complexas, utiliza OBLIGATORIAMENTE tabelas estruturadas em Markdown, "
+    "listas limpas por tópicos (bullet points) ou blocos de código destacados para maximizar a memorização visual.\n"
+    "5. ADAPTABILIDADE CRÍTICA: Deteta o nível atual de conhecimento do estudante através das suas respostas e ajusta o tom, a velocidade e a complexidade do ensino de forma dinâmica.\n\n"
+    "Regra linguística absoluta: Comunica sempre num português de Portugal (pt-PT) impecável, natural, motivador, livre de formalismos excessivos e focado na proximidade humana."
 )
 prompt_final = PROMPT_BASE.format(disciplina=disciplina_selecionada)
 
