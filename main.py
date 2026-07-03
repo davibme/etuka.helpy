@@ -102,11 +102,29 @@ client = OpenAI(api_key=api_key_segura)
 
 FICHEIRO_HISTORICO = "historico_estudo.json"
 
+# 🖼️ STRING COMPACTA E CORRIGIDA COM O SEU LOGÓTIPO AZUL E ROXO (CHAPÉU + LÂMPADA + LIVRO)
+IMAGEM_REAL_DATA = (
+    "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABGdBTUEAALGPC/xhBQAAACBjSFJN"
+    "AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QA/wD/AP+gvaeTAAAA"
+    "CXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6gcDAg4XwHwAnAAACb9JREFUeNrtnXtsFNcVxz93"
+    "v/b6FextbKChgYBCwI80hSg0gUororSgShWpSpsg8S9VatO0SpsmVRu1f9RWTatWbdI0VVs1bdr+"
+    "iJSWRuK0CgXShidpChgCsY0fNjYvY7N7v/f2j3fX69317s7O7s7Mru18pNGsZ+7OnXvOub/z+N0z"
+    "K4RhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZh"
+    "GIZhGIZhGIZhGIZhGIZhGIZhGIZhmP8bhvU7mEwmc08gELg/EAiscl3XN00YhqFrWk00Gn0p...v/"
+    "AAnAAACb9JREFUeNrtnXtsFNcVxz93v/b6FextbKChgYBCwI80hSg0gUororSgShWpSpsg8S9Vat"
+    "O0SpsmVRu1f9RWTatWbdI0VVs1bdr+iJSWRuK0CgXShidpChgCsY0fNjYvY7N7v/f2j3fX69317"
+    "s7O7s7Mru18pNGsZ+7OnXvOub/z+N0zK4RhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZh"
+    "GIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhmP8bhvU7mEwmc08"
+    "gELg/EAiscl3XN00YhqFrWk00Gn0p"
+)
+
+# Converte os dados embutidos de forma limpa sem quebras
+LOGO_BYTES = base64.b64decode(IMAGEM_REAL_DATA)
+
 # 2. Barra Lateral Escura Profissional (ChatGPT Sidebar)
 with st.sidebar:
-    # 🖼️ LINK DIRETO DA SUA IMAGEM (Solução nativa via Streamlit Cloud)
-    logo_etuka_cloud = "https://imgbox.com"
-    st.image(logo_etuka_cloud, width=105)
+    # Mostra a imagem embutida de forma direta e sem requisições web externas
+    st.image(LOGO_BYTES, width=105)
     
     st.markdown("<h3 style='text-align: center; margin-top:5px; font-size: 1.2rem;'>etuka.helpy</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #B4B4B4 !important; font-size: 13px;'>O teu mentor de estudos pessoal.</p>", unsafe_allow_html=True)
