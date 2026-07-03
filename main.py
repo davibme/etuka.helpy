@@ -6,12 +6,17 @@ from openai import OpenAI
 # 1. Configuração de Página com Identidade Visual Dark de IA
 st.set_page_config(page_title="etuka.helpy - O Teu Tutor de IA", page_icon="🎓", layout="centered")
 
-# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT
+# Injeção de CSS para recriar o Modo Escuro Puro do ChatGPT com preenchimento de fundo estilizado
 st.markdown("""
     <style>
-    /* Fundo principal totalmente escuro (Estilo ChatGPT Dark) */
+    /* Fundo principal com grelha de engenharia e brilho gradiente sutil para preencher o vazio */
     .stApp {
         background-color: #212121 !important;
+        background-image: 
+            radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px) !important;
+        background-size: 100% 100%, 30px 30px, 30px 30px !important;
         color: #ECECF1 !important;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
@@ -43,15 +48,12 @@ st.markdown("""
     
     /* Caixas de Chat Minimalistas no Modo Escuro */
     [data-testid="stChatMessage"] {
-        background-color: transparent !important;
-        border: none !important;
-        padding: 15px 0px !important;
-        margin-bottom: 5px !important;
-    }
-    
-    /* Linha divisória sutil entre as mensagens */
-    [data-testid="stChatMessage"] {
-        border-bottom: 1px solid #2F2F2F !important;
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        padding: 15px !important;
+        margin-bottom: 12px !important;
+        backdrop-filter: blur(4px);
     }
     
     /* Botão de Limpar sutil na barra lateral */
@@ -74,6 +76,7 @@ st.markdown("""
         background-color: #2F2F2F !important;
         border: 1px solid #424242 !important;
         border-radius: 26px !important;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.3);
     }
     [data-testid="stChatInput"] textarea {
         color: #FFFFFF !important;
